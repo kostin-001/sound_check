@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Landing</title>
+</head>
+<body>
+
+<form action="{% url 'do_crawl' %}" method="post">
+    {% csrf_token %}
+    <label for="dir">Path to directory to scan:</label>
+    <input type="text" id="dir" name="dir_path" required placeholder="path/to/directory"><br><br>
+
+    <p><b>File types to crawl (if nothing selected, will crawl both):</b></p>
+    <input type="checkbox" name="mp3" value="mp3">mp3<Br>
+    <input type="checkbox" name="wav" value="wav">wav<Br>
+    <br><br>
+
+    <input type="submit" value="Scan">
+</form>
+<br><br>
+
+<form action="{% url 'add_to_index' %}" method="post">
+    {% csrf_token %}
+    <label for="dir">Path to file to index:</label>
+    <input type="text" id="file" name="file_path" required placeholder="path/to/file"><br><br>
+    <input type="submit" value="Add">
+</form>
+<br><br>
+<form action="{% url 'similar_page' %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="go to find similar page">
+</form>
+<br><br>
+{{ param }}
+
+</body>
+</html>
