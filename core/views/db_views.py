@@ -1,4 +1,4 @@
-from sound_check_app.models import Song, Fingerprint
+from core.models import Song, Fingerprint
 
 
 # ========== QUERIES FOR SONGS ==========

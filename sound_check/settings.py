@@ -42,7 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'sound_check_app.apps.SoundCheckAppConfig',
+    'rest_framework',
+    'drf_yasg',
+    'core.apps.SoundCheckAppConfig',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -83,22 +86,14 @@ WSGI_APPLICATION = 'sound_check.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'sound_fingerprints',
-        'USER' : 'postgres',
-        'PASSWORD' : 'postgres',
-        'HOST' : '127.0.0.1',
-        'PORT' : '5432'
+        'ENGINE':   'django.db.backends.postgresql_psycopg2',
+        'NAME':     os.environ.get("DB_NAME", "sound_fingerprints"),
+        'USER':     os.environ.get("DB_USER", "postgres"),
+        'PASSWORD': os.environ.get("DB_PASS", "postgres"),
+        'HOST':     os.environ.get("DB_HOST", "localhost"),
+        'PORT':     os.environ.get("DB_PORT", "5432"),
     }
 }
-
-
-
-# DATABASES = {
-#     'default': {'postgres': env.db('DATABASE_URL')
-#                 }
-# }
-
 
 
 
@@ -139,3 +134,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')

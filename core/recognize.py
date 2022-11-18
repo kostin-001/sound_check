@@ -1,5 +1,5 @@
-from sound_check_app import constants
-from sound_check_app import file_utils
+from core import constants
+from core import file_utils
 
 
 class BaseRecognizer(object):

@@ -5,7 +5,7 @@ import numpy as np
 from scipy import ndimage
 from scipy.ndimage.filters import maximum_filter
 
-from sound_check_app import constants
+from core import constants
 
 
 def fingerprint(data, sr=constants.DEFAULT_SAMPLE_RATE):

@@ -1,0 +1,24 @@
+version: '3'
+services:
+
+  db:
+    restart: always
+    image: postgres:13-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DB_NAME:-django_telegram}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASS:-postgres}
+    networks:
+      - project
+
+volumes:
+  db_data:
+
+networks:
+  project:
+
+  web:

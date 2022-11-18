@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
-from sound_check_app.main_logic import SoundCheck
-from sound_check_app.recognize import FileRecognizer
+from core.main_logic import SoundCheck
+from core.recognize import FileRecognizer
 
 
 DEFAULT_EXT = ["mp3", "wav"]

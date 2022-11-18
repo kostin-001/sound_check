@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from sound_check_app.views import front_views
+from core.views import front_views
 
 urlpatterns = [
     path('do_crawl/', front_views.do_crawl, name='do_crawl'),

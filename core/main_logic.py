@@ -4,8 +4,8 @@ import sys
 import traceback
 from collections import Counter
 
-from sound_check_app import constants, file_utils, fingerprint_utils
-from sound_check_app.views import db_views
+from core import constants, file_utils, fingerprint_utils
+from core.views import db_views
 
 
 class SoundCheck(object):

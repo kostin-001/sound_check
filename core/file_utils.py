@@ -3,7 +3,7 @@ from hashlib import sha1
 
 import librosa
 
-from sound_check_app import constants
+from core import constants
 
 
 def get_file_hash(filepath, block_size=2 ** 20):
