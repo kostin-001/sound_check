@@ -14,16 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-
-from core.views import front_views
+from django.urls import path, include
 
 urlpatterns = [
-    path('do_crawl/', front_views.do_crawl, name='do_crawl'),
-    path('add_to_index/', front_views.add_to_index, name='add_to_index'),
-    path('find_similar/', front_views.find_similar, name='find_similar'),
-    path('index/', front_views.index, name='index'),
-    path('similar/', front_views.similar_page, name='similar_page'),
-    path('', front_views.index, name='index'),
     path('admin/', admin.site.urls),
+    path('api/v1/', include('api.urls', namespace='v1'), name='swagger-doc-v1'),
 ]
