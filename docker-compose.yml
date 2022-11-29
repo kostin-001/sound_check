@@ -9,9 +9,20 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: ${DB_NAME:-django_telegram}
+      POSTGRES_DB: ${DB_NAME:-sound_fingerprints}
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASS:-postgres}
+    networks:
+      - project
+
+  redis:
+    restart: always
+    image: "redis:alpine"
+    command: redis-server --appendonly yes --replica-read-only no --requirepass ${REDIS_PASSWORD:-passwd}
+    ports:
+        - "6379:6379"
+    depends_on:
+      - db
     networks:
       - project
 
@@ -20,5 +31,3 @@ volumes:
 
 networks:
   project:
-
-  web:

@@ -14,21 +14,13 @@ class SongViewSet(ModelViewSet):
     filterset_fields = ["author", "song_name", "time_create", "time_update"]
 
 
-    @swagger_auto_schema(request_body=SongCreateSerializer(many=True))
-    @action(methods=['POST'], detail=False, url_path="upload_many")
-    def upload_many(self, request):
-        serializer = SongCreateSerializer(data=request.data, many=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(status=200, data=serializer.data)
-
-
     @swagger_auto_schema(request_body=FindSimilarSongSerializer())
     @action(methods=['POST'], detail=False, url_path="find_similar")
     def find_similar(self, request):
         serializer = FindSimilarSongSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        songs = serializer.save()
+        serializer = FindSimilarSongSerializer(songs, many=True)
         return Response(status=200, data=serializer.data)
 
 

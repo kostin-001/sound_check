@@ -11,11 +11,11 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+
 # import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_yasg',
+    'django_celery_beat',
+    'django_celery_results',
     'core.apps.SoundCheckAppConfig',
     'api',
 ]
@@ -57,16 +59,19 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+FILE_UPLOAD_HANDLERS = [
+    'django.core.files.uploadhandler.TemporaryFileUploadHandler',
+]
 
 ROOT_URLCONF = 'sound_check.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        'BACKEND':  'django.template.backends.django.DjangoTemplates',
+        'DIRS':     [os.path.join(BASE_DIR, 'templates')]
         ,
         'APP_DIRS': True,
-        'OPTIONS': {
+        'OPTIONS':  {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -78,7 +83,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'sound_check.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -105,7 +109,6 @@ SWAGGER_SETTINGS = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -124,20 +127,31 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
+REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
+REDIS_USER = os.environ.get('REDIS_USER', '')
+REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', 'passwd')
+
+CELERY_BROKER_URL = f'redis://{REDIS_USER}:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_USER}:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0'
+
+CELERY_BEAT_QUEUE = "beat"
+CELERY_TASKS_QUEUE = "tasks"
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_CHECK_ORDER_STATUS_INTERVAL = 20
+CELERY_GET_COURSE_INTERVAL = 60
+CELERY_IMPORTS = ("sound_check.tasks",)
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/

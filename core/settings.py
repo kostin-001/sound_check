@@ -1,0 +1,8 @@
+import os
+
+DEFAULT_TIME_RESOLUTION = float(os.environ.get("DEFAULT_TIME_RESOLUTION", ".023"))
+DEFAULT_SAMPLE_RATE = int(os.environ.get("DEFAULT_SAMPLE_RATE", "22050"))
+PEAK_NEIGHBORHOOD_SIZE = int(os.environ.get("PEAK_NEIGHBORHOOD_SIZE", "20"))
+FINGERPRINT_REDUCTION = int(os.environ.get("FINGERPRINT_REDUCTION", "20"))
+FINGERPRINT_LIMIT = int(os.environ.get("FINGERPRINT_LIMIT", 0))
+PEAK_SORT = int(os.environ.get("PEAK_SORT", True))
