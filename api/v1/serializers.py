@@ -1,5 +1,5 @@
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, DateTimeField, FileField
+from rest_framework.fields import CharField, DateTimeField, FileField, IntegerField
 from rest_framework.serializers import ModelSerializer, Serializer
 
 from core.models import Song
@@ -18,15 +18,15 @@ class SongCreateSerializer(ModelSerializer):
         song = super().create(validated_data)
         filepath = SongService.get_file_path(song)
         ext = filepath.lower().split(".")[-1]
-        if ext not in ["mp3", "wav"]:
+        if ext not in ["mp3", "wav"]:  # check if file format is allowed
             raise ValidationError(f"Unacceptable audio format. Expected mp3 or wav, got {ext}")
         hash_sum = SongService.get_file_hash(filepath)
-        if SongService.is_file_in_library(hash_sum):
+        if SongService.is_file_in_library(hash_sum):  # check if file not exist in our db
             song.delete()
             raise ValidationError("File with this hash-sum already exist")
         song.file_sha256 = hash_sum
         song.save(update_fields=['file_sha256'])
-        create_song_fingerprints.apply_async((song.pk,), retry=False, expires=120, ignore_result=True, queue=settings.CELERY_TASKS_QUEUE)
+        create_song_fingerprints.apply_async((song.pk,), retry=False, expires=120, ignore_result=True, queue=settings.CELERY_TASKS_QUEUE)  # create celery task for creating fingerprints in background
         return song
 
 
@@ -43,9 +43,8 @@ class SongCreateSerializer(ModelSerializer):
 
 
 class FindSimilarSongSerializer(Serializer):
-    author = CharField(read_only=True)
-    song_name = CharField(read_only=True)
     file = FileField()
+    number_of_similar_items = IntegerField()
 
 
     def update(self, instance, validated_data):
@@ -54,7 +53,19 @@ class FindSimilarSongSerializer(Serializer):
 
     def create(self, validated_data):
         file = validated_data.pop('file')
+        number_of_similar_items = validated_data.pop('number_of_similar_items')
         hash_sum = SongService.get_file_hash(file.temporary_file_path())
         if SongService.is_file_in_library(hash_sum):
-            return Song.objects.filter(file_sha256=hash_sum)
-        return SongService.find_similar_songs(file)
+            song = Song.objects.get(file_sha256=hash_sum)
+            song.similarity = 100
+            return [song]
+        return SongService.find_similar_songs(file, number_of_similar_items)
+
+
+class SimilarSongSerializer(ModelSerializer):
+    similarity = CharField(read_only=True)
+
+
+    class Meta:
+        model = Song
+        fields = ["id", "author", "song_name", "file", "similarity"]

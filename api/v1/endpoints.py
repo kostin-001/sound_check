@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from api.v1.pagination import StandardResultsSetPagination
-from api.v1.serializers import SongCreateSerializer, FindSimilarSongSerializer
+from api.v1.serializers import SongCreateSerializer, FindSimilarSongSerializer, SimilarSongSerializer
 from core.models import Song
 
 
@@ -15,12 +15,12 @@ class SongViewSet(ModelViewSet):
 
 
     @swagger_auto_schema(request_body=FindSimilarSongSerializer())
-    @action(methods=['POST'], detail=False, url_path="find_similar")
+    @action(methods=['POST'], detail=False, url_path="find_similar", serializer_class=FindSimilarSongSerializer)
     def find_similar(self, request):
         serializer = FindSimilarSongSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         songs = serializer.save()
-        serializer = FindSimilarSongSerializer(songs, many=True)
+        serializer = SimilarSongSerializer(songs, many=True)
         return Response(status=200, data=serializer.data)
 
 
